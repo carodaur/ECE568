@@ -1,0 +1,70 @@
+#Mingqi Hou, 999767676, mingqi.hou@mail.utoronto.ca
+
+sploit 1
+========
+Target 1 has stack overflow vulnerability. The strcpy in function 
+foo (target1.c line 8) copies a string of unknown length into a 
+96 byte string (buf). No boundary check is performed prior to the 
+strcpy. Target 1 was exploited by creating a string that is 
+sufficiently long to overwrite the return address of function 
+lab_main to take over the control. The exploit string contains 
+shellcode code and is padded with the exact number of NOP to overflow 
+the stack and overwrite the return address. The return address is 
+overwritten with the address of the shellcode.
+
+sploit 2
+========
+Target 2 has stack overflow vulnerability. Function foo (target2.c 
+line 14) uses a loop to copy a string "arg" into a local string "buf". 
+The size of string "buf" is 256 bytes. However, function foo copies 272 
+bytes from string "arg" to "buf", resulting in a overflow that can 
+overwrite the value of i and len, allowing attacker to copy arbitrary 
+amount of bytes into stack. The number of len and i are relatively small, 
+indicating /x00 exist in the hex value of len and i. NULL character causes 
+the exploit string to terminate. To solve this issue, multiple environment 
+variables are used as exploit string to carry NULL character.
+
+sploit 3
+========
+Target 3 has stack overflow vulnerability. Function bar (target3.c 
+line 14) uses a loop to copy a string "arg" into a string "targ". The string 
+"targ" has allocated size of 60. However, function foo copies 88 bytes in to 
+"targ", causing a overflow that overwrites the return address of function bar.
+
+sploit 4
+========
+Target 4 has stack overflow vulnerability. Function foo (target4.c 
+line 20) uses a loop to copy memory in pointer "a" into pointer "b". Pointer 
+"b" points to a char array "buf", which has allocated memory of 156 bytes. 
+Function foo copies 196 bytes into "buf" (the char array that "b" points to), 
+resulting in a overflow. The overflow allows attacker to manipulate the value of 
+variable i and len, which ultimately allows attacker to copy arbitrary 
+amount of bytes into stack. The number of len and i are relatively small, 
+indicating /x00 exist in the hex value of len and i. NULL character causes 
+the exploit string to terminate. To solve this issue, multiple environment 
+variables are used as exploit string.
+
+sploit 5
+========
+Target 5 has format string vulnerability. The snprintf in function foo (target5.c 
+line 16) uses user input as format string, causing this vulnerability. By viewing 
+the stack information, I learned that the local variable of snprint and exploit 
+string "formatString" are 32 byte apart. Since "%08X" increments the pointer by 
+8 bytes. Adding 4 "%08X" moves the pointer to the beginning of exploit string 
+"formatString". One additional "%73x" is needed is print correct number of bytes 
+needed and skip the memory address stored in the beginning of "formatstring". Then 
+the next 4 bytes are the return address that can be overwritten by "%hhn". The 
+return address is overwritten using this method.
+
+sploit 6
+========
+Target 6 has double free vulnerability. Tag q is incorrectly freed twice (target6.c 
+line 36). This gives attacker opportunity to overwrite the return address by generating 
+fake tag. In this case, a fake tag is generated at the location of tag q, pointing to the 
+return address as the next tag and the beginning of shellcode as previous tag. By studying 
+function tfree in tmalloc.c, I learned that the fake tag must consolidate leftward as 
+writing a free bit to return address is not possible. Line 120 (q->s.r=p->s.r;) indicates 
+the 5th to 8th bytes of the shellcode will be modified to recode the return address. Shellcode 
+is modified to accommodate this. Eight bytes ("\x04\xeb\x90\x90\x91\x90\x90\x90") are inserted 
+ahead of the Aleph One shellcode. The 5th byte is 0x91 to fulfill the free bit check. The first 
+4 bytes, 0x9090eb04, is the machine instruction to skip next 4 bytes, which is garbage.
