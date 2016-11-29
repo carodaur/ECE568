@@ -1,0 +1,23 @@
+#Mingqi Hou, 999767676, mingqi.hou@mail.utoronto.ca 
+This project implements the generation of HOTP and TOTP QR codes as well as the validation of the HOTP and TOTP values. The generated QR codes and corresponding values are compatible with Google Authenticator. 
+
+To build this project, use command “make”.
+
+File generateQRcode.c is implemented to generated Google Authenticator compatible HOTP and TOTP QR codes. To run it, use command “./generateQRcode <Issuer> <Account Name> <Hex Key>”. 
+
+The secret key is an 80-bit value. Thus the input hex key string should be less than 20 characters. (Keys longer than 20 characters are not handled.)
+
+In generateQRcode.c, the input hex key string is translated into a binary value and then encoded in Base-32. The issuer and account name are URL encoded. All the properly encoded information is passed to the provided encoding tool to generate HOTP and TOTP barcodes.
+
+File validateQRcode.c is implemented to validated HOTP and TOTP values. To run it, use command "./validateQRcode <Hex Key> <HOTP Value> <TOTP Value>".
+
+Similarly, the input hex key string must be less than 20 characters. The HOTP and TOTP values must be 6 characters each.
+
+The counter value for HOTP is set to a static value of 1 for the sake of this lab (no synchronization between HOTP valuator and HOTP generator). Current system time is used to calculate TOTP value. 
+
+To obtain the HOTP/TOTP value, the hex key string and a 8 byte value is used to calculate HMAC. In the case of HOTP, the 8 byte value is always 1. In terms of TOTP, the 8 byte value is a calculated time value, which equals the current time (in seconds) divided by the period (30).
+
+The hex key string is translated to a 80-bit binary value to calculate HMAC. The binary key value is padded with tailing 0s to 512-bit. The HMAC is then calculated using the following formula 
+	SHA-1[512-bit Key ^ opad || SHA-1[512-bit Key ^ ipad || 8 byte value] ]
+	"||" means concatenation
+The HAMC result is then truncated using the lower 4 bits of the 20th byte of the result value as offset index.  
