@@ -1,0 +1,31 @@
+#Mingqi Hou, 999767676, mingqi.hou@mail.utoronto.ca
+
+To implement the client and server, I followed the OpenSSL tutorial by Eric Rescorla, which is highly recommended on Stackoverflow. 
+The following features are added to the server and client for them to function using SSL
+1) Initialize SSL library, algorithm, and error string
+2) Create new SSL context 
+	a) SSLv23_server_method is used for server to support SSLv2, SSLv3, and TLSv1 protocol.
+	b) SSLv23_client_method is used with SSL_OP_NO_SSLv2 option for client to only support SSLv3, and TLSv1 protocol.
+3) Configure cipher support by SSL_CTX_set_cipher_list
+	a) "SSLv2:SSLv3:TLSv1" for server to support all cipher suites available for SSLv2,	 SSLv3 and TLSv1
+	b) "SHA1" for client to support only SHA1.
+4) Configure SSL context in client and server to verify certificates
+	a) SSL_VERIFY_PEER | SSL_VERIFY_CLIENT_ONCE | SSL_VERIFY_FAIL_IF_NO_PEER_CERT is used for server to verify the client certificate. The verification fails if client is unable to provide a certificate
+	b) SSL_VERIFY_PEER is used for client to verify the server certificate
+4) Load CA and certificates
+* The socket connection setup is reused in client and server
+5) Create new SSL connections for server and client using SSL_new and bind BIO to them
+6) Eastbalish SSL connection between server and client
+	a) Server accepts connection using function SSL_accept
+	b) Client request connection using function SSL_connect
+7) Verify certificate using function SSL_get_verify_result in client and server
+8) The common name and email address from server certificate are extracted by the client to verify the certificate 
+9) Exchange data using functions SSL_write and SSL_read
+10) SSL_shutdown, SSL_free, and X509_free are added to properly shutdown client and server
+11) Detects premature close is client or server is not properly shutdown
+
+The following cases are used to test error handling 
+1) Change SSLv23_server_method to SSLv2_server_method
+2) Change server cipher support to "ALL:!SHA1"
+3) Validate certificate validation by generating key pairs with invalid common name, email address or CA.
+4) Validate premature close detection by terminating server and/or client in the middle of request handling without proper shutdown
